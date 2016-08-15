@@ -9,10 +9,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 <link rel="import" href="../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../neon-animation/animations/slide-from-top-animation.html">
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
@@ -46,24 +48,28 @@ Example:
 
 <dom-module id="gn-notification">
   <template>
-    <style>
-      :host {
-        display: inline-block;
-      }
+    <style is="custom-style" include="iron-flex">
 
       :host #header {
         background-color: var(--gn-notification-header-background, --google-grey-500);
         color: var(--gn-notification-header-color, #fff);
         margin: 0px;
         padding: 10px;
+
+        @apply(--layout-horizontal);
       }
 
       :host #header-title {
+        display: inline-block;
         font-size: 1.5em;
         font-weight: bold;
+        margin:auto;
+
+        @apply(--layout-flex);
       }
 
       :host #header-icon {
+        margin: auto;
         --iron-icon-height: 32px;
         --icon-icon-height: 32px;
       }
@@ -72,10 +78,12 @@ Example:
         background-color: var(--gn-notification-background, --google-light-grey-50);
         color: var(--gn-notification-color, --google-grey-500);
         /* TODO: Should be responsive */
-        max-width: 250px;
-        max-height: 200px;
-        min-width: 250px;
-        min-height: 200px;
+        /*max-width: 400px;*/
+        /*max-height: 200px;*/
+        /*min-width: 400px;*/
+        /*min-height: 200px;*/
+        /*top: 0px;*/
+        width: 400px;
       }
 
       :host([warning]) #dialog {
@@ -108,8 +116,11 @@ Example:
     </style>
 
     <paper-dialog id="dialog"
-                  entry-animation="scale-up-animation"
-                  exit-animation="fade-out-animation">
+                  entry-animation="slide-from-top-animation"
+                  exit-animation="fade-out-animation"
+                  no-overlap
+                  no-cancel-on-esc-key
+                  no-cancel-on-outside-click>
       <div id="header">
         <iron-icon id="header-icon" icon="[[icon]]"></iron-icon>
         <span id="header-title">[[title]]</span>
@@ -140,7 +151,8 @@ Example:
         */
         icon: {
           type: String,
-          value: 'lightbulb-outline'
+          value: 'lightbulb-outline',
+          notify: true
         },
 
         /**
