@@ -51,6 +51,9 @@ Example:
     <style is="custom-style" include="iron-flex">
       :host {
         display: block;
+        max-width: 500px;
+
+        @apply(--layout-flex)
       }
 
       :host #header {
@@ -66,15 +69,14 @@ Example:
         display: inline-block;
         font-size: 1.2em;
         font-weight: bold;
-        margin: auto;
+        padding: 14px 20px 14px 0;
 
         @apply(--layout-flex);
       }
 
       :host #header-icon {
-        margin-right: 10px;
         opacity: var(--dark-secondary-opacity);
-        padding: 14px;
+        padding: 14px 14px 14px 14px;
         width: 42px;
 
         --iron-icon-height: 42px;
@@ -84,7 +86,6 @@ Example:
       :host #dialog {
         background-color: var(--gn-notification-background, #fff);
         height: 85px;
-        width: 400px;
       }
 
       :host([warning]) #header {
@@ -121,7 +122,7 @@ Example:
       }
     </style>
 
-    <paper-material id="dialog">
+    <paper-material elevation="5" id="dialog">
       <div id="header">
         <iron-icon id="header-icon" icon="[[icon]]"></iron-icon>
         <span id="header-title">[[title]]</span>
