@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../paper-material/paper-material.html">
 <!-- <link rel="import" href="../iron-swipeable-container/iron-swipeable-container.html"> -->
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-styles/color.html">
@@ -60,18 +61,43 @@ Example:
         position: relative;
 
         @apply(--layout-horizontal);
-        @apply(--layout-center-justified);
       }
 
       .distance {
         font-size: 2.2em;
       }
 
+      #left-container {
+        @apply(--layout-end-justified);
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+
       #instructions {
         display: block;
         height: 50px;
-        margin-left: 25px;
         word-wrap: break-word;
+
+        @apply(--layout-flex);
+      }
+
+      paper-material {
+        background-color: var(--gn-notification-background, #fff);
+        height: 50px;
+        width: 50px;
+        margin-left: 10px;
+        margin-right: 10px;
+
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+      #turnIcon {
+        color: #00960a;
+        margin: auto;
+
+        --iron-icon-width: 48px;
+        --iron-icon-height: 48px;
       }
 
       #notifications {
@@ -79,7 +105,7 @@ Example:
         margin: auto;
         position: absolute;
         right: 0;
-        top: 75px;
+        top: 74px;
         z-index: 2;
 
         @apply(--layout-horizontal);
@@ -89,12 +115,16 @@ Example:
 
     <iron-ajax  id="ajax"
                 url="turn-instructions.json"
-                last-response="{{turnInstructionSource}}" auto></iron-ajax>
+                last-response="{{_turnInstructionSource}}" auto></iron-ajax>
 
     <div id="directions">
-      <div class="distance" hidden$="{{!distance}}">{{distance}}</div>
-      <div class="distance" hidden$="{{!distance}}">{{unit}}</div>
-      <!-- <div id="icon"></div -->
+      <div id="left-container">
+        <div class="distance" hidden$="{{!distance}}">{{distance}}</div>
+        <div class="distance" hidden$="{{!distance}}">{{unit}}</div>
+        <paper-material elevation="5">
+          <iron-icon id="turnIcon" icon="[[turnIcon]]"></iron-icon>
+        </paper-material>
+      </div>
       <div id="instructions">{{instruction}}</div>
     </div>
     <div id="notifications"/>
@@ -120,6 +150,32 @@ Example:
         turnCode: {
           type: Number,
           value: 0
+        },
+
+        /**
+        * Turn icon source
+        */
+        turnIconSource: {
+          type: Object,
+          value: function() {
+            return {
+              0: "",
+              1: "arrow-upward",
+              2: "arrow-back",
+              3: "arrow-forward",
+              4: "arrow-back",
+              5: "arrow-forward",
+              6: "undo",
+              7: "redo",
+              20: "av:replay",
+              21: "arrow-forward"
+            };
+          }
+        },
+
+        turnIcon: {
+          type: String,
+          value: "arrow-upward"
         },
 
         /**
@@ -202,6 +258,7 @@ Example:
             return o.turn === turnCode;
           });
           this.set("instruction", turn[0].text);
+          this.turnIcon = this.turnIconSource[turnCode];
         }
       },
 
