@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout-classes.html">
 <!-- <link rel="import" href="../iron-swipeable-container/iron-swipeable-container.html"> -->
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-styles/color.html">
 <link rel="import" href="gn-route-notification.html">
 
@@ -86,6 +87,10 @@ Example:
       }
     </style>
 
+    <iron-ajax  id="ajax"
+                url="turn-instructions.json"
+                last-response="{{turnInstructionSource}}" auto></iron-ajax>
+
     <div id="directions">
       <div class="distance" hidden$="{{!distance}}">{{distance}}</div>
       <div class="distance" hidden$="{{!distance}}">{{unit}}</div>
@@ -118,54 +123,31 @@ Example:
         },
 
         /**
+        * Sets the language of turn instructions.
+        */
+        locale: {
+          type: String,
+          value: "en"
+        },
+
+        /**
+        * Json source for turn instructions in different languages.
+        */
+        _turnInstructionSource : {
+          type: Object,
+          value: function() {
+            return {};
+          }
+        },
+
+        /**
         * Temporary Array for instructions. In future this will
         * possibly be outsourced.
         */
         _turnInstructions: {
           type: Array,
           value: function() {
-            return [
-              {
-                turn: 0,
-                text: ""
-              },
-              {
-                turn: 1,
-                text: "Continue straight ahead"
-              },
-              {
-                turn: 2,
-                text: "Turn left"
-              },
-              {
-                turn: 3,
-                text: "Turn right"
-              },
-              {
-                turn: 4,
-                text: "Slightly turn left"
-              },
-              {
-                turn: 5,
-                text: "Slightly turn right"
-              },
-              {
-                turn: 6,
-                text: "Take a sharp left"
-              },
-              {
-                turn: 7,
-                text: "Take a sharp right"
-              },
-              {
-                turn: 20,
-                text: "Turn into the traffic circle"
-              },
-              {
-                turn: 21,
-                text: "Leave the roundabout"
-              }
-            ];
+            return [];
           }
         },
 
@@ -203,8 +185,16 @@ Example:
 
       observers: [
         "addNotification(newestNotification)",
-        "_getTurnInstruction(turnCode)"
+        "_getTurnInstruction(turnCode)",
+        "_setTurnInstructionSource(locale, _turnInstructionSource)"
       ],
+
+      /**
+      * Sets the source for turn instructions in respect to the `locale` setting.
+      */
+      _setTurnInstructionSource: function(locale, _turnInstructionSource) {
+        this._turnInstructions = _turnInstructionSource[locale]
+      },
 
       _getTurnInstruction: function(turnCode) {
         if (this._turnInstructions !== undefined) {

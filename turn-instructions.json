@@ -1,0 +1,86 @@
+{
+  "en": [
+    {
+      "turn": 0,
+      "text": ""
+    },
+    {
+      "turn": 1,
+      "text": "Continue straight ahead"
+    },
+    {
+      "turn": 2,
+      "text": "Turn left"
+    },
+    {
+      "turn": 3,
+      "text": "Turn right"
+    },
+    {
+      "turn": 4,
+      "text": "Slightly turn left"
+    },
+    {
+      "turn": 5,
+      "text": "Slightly turn right"
+    },
+    {
+      "turn": 6,
+      "text": "Take a sharp left"
+    },
+    {
+      "turn": 7,
+      "text": "Take a sharp right"
+    },
+    {
+      "turn": 20,
+      "text": "Turn into the traffic circle"
+    },
+    {
+      "turn": 21,
+      "text": "Leave the roundabout"
+    }
+  ],
+  "de": [
+    {
+      "turn": 0,
+      "text": ""
+    },
+    {
+      "turn": 1,
+      "text": "Weiter geradeaus"
+    },
+    {
+      "turn": 2,
+      "text": "Links abbiegen"
+    },
+    {
+      "turn": 3,
+      "text": "Rechts abbiegen"
+    },
+    {
+      "turn": 4,
+      "text": "Slightly turn left"
+    },
+    {
+      "turn": 5,
+      "text": "Slightly turn right"
+    },
+    {
+      "turn": 6,
+      "text": "Scharf links abbiegen"
+    },
+    {
+      "turn": 7,
+      "text": "Scharf rechts abbiegen"
+    },
+    {
+      "turn": 20,
+      "text": "In den Kreisverkehr einbiegen"
+    },
+    {
+      "turn": 21,
+      "text": "Den Kreisverkehr verlassen"
+    }
+  ]
+}
