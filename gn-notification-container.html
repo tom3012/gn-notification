@@ -65,6 +65,18 @@ Example:
 
       .distance {
         font-size: 2.2em;
+
+        @apply(--layout-horizontal);
+        @apply(--layout-end);
+      }
+
+      .unit {
+        font-size: 1.4em;
+        margin-left: 5px;
+        margin-bottom: 5px;
+
+        @apply(--layout-horizontal);
+        @apply(--layout-end);
       }
 
       #left-container {
@@ -83,8 +95,8 @@ Example:
 
       paper-material {
         background-color: var(--gn-notification-background, #fff);
-        height: 50px;
-        width: 50px;
+        height: 48px;
+        width: 48px;
         margin-left: 10px;
         margin-right: 10px;
 
@@ -96,8 +108,8 @@ Example:
         color: #00960a;
         margin: auto;
 
-        --iron-icon-width: 48px;
-        --iron-icon-height: 48px;
+        --iron-icon-width: 44px;
+        --iron-icon-height: 44px;
       }
 
       #notifications {
@@ -119,8 +131,8 @@ Example:
 
     <div id="directions">
       <div id="left-container">
-        <div class="distance" hidden$="{{!distance}}">{{distance}}</div>
-        <div class="distance" hidden$="{{!distance}}">{{unit}}</div>
+        <div class="distance" hidden$="{{!distance}}">{{_outputDist}} </div>
+        <div class="unit" hidden$="{{!distance}}">{{unit}}</div>
         <paper-material elevation="5">
           <iron-icon id="turnIcon" icon="[[turnIcon]]"></iron-icon>
         </paper-material>
@@ -208,9 +220,17 @@ Example:
         },
 
         /**
-        * Distance value.
+        * Distance input value.
         */
         distance: {
+          type: Number,
+          value: 0
+        },
+
+        /**
+        * Distance which is shown.
+        */
+        _OutputDist: {
           type: Number,
           value: 0
         },
@@ -242,8 +262,31 @@ Example:
       observers: [
         "addNotification(newestNotification)",
         "_getTurnInstruction(turnCode)",
-        "_setTurnInstructionSource(locale, _turnInstructionSource)"
+        "_setTurnInstructionSource(locale, _turnInstructionSource)",
+        "_calcOutputDist(distance)"
       ],
+
+      /**
+      * Rounds showing distance according to size of distance.
+      */
+      _calcOutputDist: function(distance) {
+        if (distance >= 5000) {
+          this._outputDist = Math.round(distance / 1000);
+          this.unit = "km";
+        }
+        else if (distance >= 1000 && distance < 5000) {
+          this._outputDist = Math.round(distance / 100) / 10;
+          this.unit = "km";
+        }
+        else if (distance > 25 && distance < 1000) {
+          this._outputDist = Math.round(distance / 10) * 10;
+          this.unit = "m";
+        }
+        else if (distance <= 25) {
+          this._outputDist = distance;
+          this.unit = "m";
+        }
+      },
 
       /**
       * Sets the source for turn instructions in respect to the `locale` setting.
