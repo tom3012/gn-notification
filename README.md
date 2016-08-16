@@ -1,12 +1,6 @@
 # gn-notification
 
-GreenNav polymer element for user dialogs and notifications.
-
-## Project Idea
-
-The idea is to create a smart notification system showing directions of the calculated route as well as every other useful information about current position. Furthermore this module should be open enough to handle data / informations added in future.
-
-This project is in a very early stage and WIP!
+GreenNav polymer element for showing route informations and notifications. The gn-notification-container handles route informations and additional notifications with data-bindings. The gn-route-notification shows hints, warnings and errors (very important informations) on the route.
 
 ## Setup Instructions
 
@@ -46,45 +40,46 @@ polyserve
 
 Once running, you can preview your element at `http://localhost:8080/components/gn-notification/`, where `gn-notification` is the name of the directory containing it.
 
-### Short example
+### Short examples
+
+The main component:
 
 ```html
-<paper-button raised onclick="hint.open()">hint notification</paper-button>
-
-<gn-notification  id="hint" title="Hint">This is a hint message.</gn-notification>
+<gn-notification-container turn-code="3"
+                           distance="25"></gn-notification-container>
+<google-map latitude="37.77493" longitude="-122.41942"></google-map>
 ```
 
-Example with different color settings for _warning_ and _error_ messages:
+Example of different notifications:
 
 ```html
 <paper-button raised onclick="warning.open()">warning notification</paper-button>
 <paper-button raised onclick="error.open()">error notification</paper-button>
 
-<gn-notification  id="warning" warning title="Warning">
+<gn-route-notification  id="warning" warning title="Warning">
   Oh, oh... there is a warning message.
-</gn-notification>
-
-<gn-notification  id="error" error title="Error">
+</gn-route-notification>
+<gn-route-notification  id="error" error title="Error">
   An error has occurred
-</gn-notification>
+</gn-route-notification>
+```
+
+With text to speech:
+
+```html
+<gn-notification-tts text="Hello World!" locale="en"></gn-notification-tts>
 ```
 
 ## TODO
 
-### In Progress
+### Done
 
-- Show icons by message type
-- Possibility to set position of messages
-- Prettier Design
-
-### Soon
-
-- [ ] Show debug messages from other modules
-- [ ] Show directions (Webapp)
-- [ ] Show useful information about traffic (Webapp)
-- [ ] Show useful information about current position (Webapp)
+- [x] ~~Show directions (Webapp)~~
+- [x] ~~Show useful information with additional notifications (Webapp)~~
+- [x] ~~Add voice output~~
 
 ### Maybe in Future
 
-- [ ] Add voice output (?)
-- [ ] Implement Google Authentificaiton
+- [ ] Implement Google Authentificaiton (?)
+
+
