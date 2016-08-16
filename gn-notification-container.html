@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../paper-styles/color.html">
 <link rel="import" href="gn-route-notification.html">
+<link rel="import" href="gn-notification-tts.html">
 
 <!--
 An element providing notifications for the GreenNavigation WebApp.
@@ -128,6 +129,10 @@ Example:
     <iron-ajax  id="ajax"
                 url="turn-instructions.json"
                 last-response="{{_turnInstructionSource}}" auto></iron-ajax>
+    <gn-notification-tts distance={{_outputDist}}
+                         unit={{unit}}
+                         route-info={{instruction}}
+                         locale={{locale}}></gn-notification-tts>
 
     <div id="directions">
       <div id="left-container">
@@ -195,7 +200,7 @@ Example:
         */
         locale: {
           type: String,
-          value: "en"
+          value: ""
         },
 
         /**
@@ -265,6 +270,12 @@ Example:
         "_setTurnInstructionSource(locale, _turnInstructionSource)",
         "_calcOutputDist(distance)"
       ],
+
+      ready: function() {
+        if (!this.locale) {
+          this.locale = document.documentElement.lang || navigator.language
+        }
+      },
 
       /**
       * Rounds showing distance according to size of distance.

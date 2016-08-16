@@ -1,0 +1,150 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+An element providing notifications for the GreenNavigation WebApp.
+
+Example:
+
+    <gn-notification-tts text="Hello World!" locale="en"></gn-notification-tts>
+
+@demo demo/index.html
+@hero hero.svg
+-->
+
+<dom-module id="gn-notification-tts">
+  <script>
+    // Global SpeechSynthesisUtterance
+    var ttsMsg = new SpeechSynthesisUtterance('');
+
+    Polymer({
+      is: 'gn-notification-tts',
+
+      properties: {
+        /**
+        * Sets language of speech synthesis
+        */
+        locale: {
+          type: String,
+          value: ''
+        },
+
+        _additionalText: {
+          type: Object,
+          value: function() {
+            return {
+              'de': {
+                'turnNow': 'Jetzt ',
+                'forecast': 'In '
+              },
+              'en': {
+                'turnNow': 'Please ',
+                'forecast': 'After '
+              }
+            }
+          }
+        },
+
+        /**
+        * Any text to speech. Could be used for any other notification than
+        * route instructions.
+        */
+        text: {
+          type: String,
+          value: ''
+        },
+
+        /**
+        * Route informations, such as instructions.
+        */
+        routeInfo: {
+          type: String,
+          value: ''
+        },
+
+        /**
+        * Distance value for route informations.
+        */
+        distance: {
+          type: Number,
+          value: 0
+        },
+
+        /**
+        * Sets the minimimal distance before route instructions will spocken.
+        * Note: This value have to be passed via `distance`!
+        */
+        minDist: {
+          type: Number,
+          value: 15
+        },
+
+        /**
+        * Unit of the `distance`.
+        */
+        unit: {
+          type: String,
+          value: ''
+        }
+      },
+
+      observers: [
+        'textToSpeech(text)',
+        '_routeInfoToSpeech(routeInfo)',
+        '_turnNow(distance)'
+      ],
+
+      ready: function() {
+        if (this.locale) {
+          ttsMsg.lang = this.locale;
+        }
+        else {
+          this.locale = document.documentElement.lang || navigator.language
+        }
+      },
+
+      /**
+      * Is executed whenever `text` is changed.
+      */
+      textToSpeech: function(text) {
+        ttsMsg.text = text;
+        window.speechSynthesis.speak(ttsMsg);
+      },
+
+      /**
+      * Will put `routeInfo` to speech synthesis, if `minDist` is reached.
+      */
+      _turnNow: function(distance) {
+        if (distance === this.minDist) {
+          routeInfo = this._additionalText[this.locale].turnNow  +  this.routeInfo;
+          ttsMsg.text = routeInfo;
+          window.speechSynthesis.speak(ttsMsg);
+        }
+      },
+
+      /**
+      * Will delayed put `routeInfo` to speech synthesis
+      * whenever `routeInfo` is chanded.
+      */
+      _routeInfoToSpeech: function(routeInfo) {
+        setTimeout(function() {
+          if (this.distance) {
+            routeInfo = this._additionalText[this.locale].forecast
+            + this.distance.toString() + ' ' + this.unit + ' ' +  routeInfo;
+          }
+          ttsMsg.text = routeInfo;
+          window.speechSynthesis.speak(ttsMsg);
+        }.bind(this), 2000);
+      }
+    });
+  </script>
+</dom-module>
