@@ -50,12 +50,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div id="directionExample">
       <gn-notification-container id="notifications"
-                                 directions="Turn left"
-                                 distance="25"></gn-notification-container>
+                                 locale="en"></gn-notification-container>
       <google-map id="map" latitude="37.77493" longitude="-122.41942" disable-default-ui="true"></google-map>
     </div>
     <script>
       var notifications = document.getElementById("notifications");
+
+      setTimeout(function() {
+        notifications.set("turnCode", 3);
+        notifications.set("distance", "25")
+      }.bind(this), 1000);
 
       var hintMessage = document.getElementById("hint").addEventListener("tap", function() {
         notifications.set("newestNotification", {
