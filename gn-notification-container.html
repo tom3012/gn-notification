@@ -22,22 +22,11 @@ An element providing notifications for the GreenNavigation WebApp.
 
 Example:
 
-    <paper-button raised onclick="hint.open()">hint notification</paper-button>
-
-    <gn-notification  id="hint" title="Hint">This is a hint message.</gn-notification>
-
-Example:
-
-    <paper-button raised onclick="warning.open()">warning notification</paper-button>
-    <paper-button raised onclick="error.open()">error notification</paper-button>
-
-    <gn-notification  id="warning" warning title="Warning">
-      Oh, oh... there is a warning message.
-    </gn-notification>
-
-    <gn-notification  id="error" error title="Error">
-      An error has occurred
-    </gn-notification>
+    <div>
+      <gn-notification-container turn-code="3"
+                                 distance="25"></gn-notification-container>
+      <google-map latitude="37.77493" longitude="-122.41942"></google-map>
+    </div>
 
 @demo demo/index.html
 @hero hero.svg
@@ -74,6 +63,7 @@ Example:
       .unit {
         font-size: 1.4em;
         margin-left: 5px;
+        margin-right: 10px;
         margin-bottom: 5px;
 
         @apply(--layout-horizontal);
@@ -89,6 +79,7 @@ Example:
       #instructions {
         display: block;
         height: 50px;
+        margin-left: 10px;
         word-wrap: break-word;
 
         @apply(--layout-flex);
@@ -98,8 +89,6 @@ Example:
         background-color: var(--gn-notification-background, #fff);
         height: 48px;
         width: 48px;
-        margin-left: 10px;
-        margin-right: 10px;
 
         @apply(--layout-horizontal);
         @apply(--layout-center);
@@ -129,17 +118,17 @@ Example:
     <iron-ajax  id="ajax"
                 url="turn-instructions.json"
                 last-response="{{_turnInstructionSource}}" auto></iron-ajax>
-    <gn-notification-tts distance={{_outputDist}}
-                         unit={{unit}}
-                         route-info={{instruction}}
-                         locale={{locale}}></gn-notification-tts>
+    <gn-notification-tts distance=[[_outputDist]]
+                         unit=[[unit]]
+                         route-info=[[instruction]]
+                         locale=[[locale]]></gn-notification-tts>
 
     <div id="directions">
       <div id="left-container">
         <div class="distance" hidden$="{{!distance}}">{{_outputDist}} </div>
         <div class="unit" hidden$="{{!distance}}">{{unit}}</div>
-        <paper-material elevation="5">
-          <iron-icon id="turnIcon" icon="[[turnIcon]]"></iron-icon>
+        <paper-material hidden$="{{!_turnIcon}}" elevation="5">
+          <iron-icon id="turnIcon" icon="[[_turnIcon]]"></iron-icon>
         </paper-material>
       </div>
       <div id="instructions">{{instruction}}</div>
@@ -170,7 +159,7 @@ Example:
         },
 
         /**
-        * Turn icon source
+        * Turn icon source.
         */
         turnIconSource: {
           type: Object,
@@ -190,13 +179,14 @@ Example:
           }
         },
 
-        turnIcon: {
+        _turnIcon: {
           type: String,
-          value: "arrow-upward"
+          value: ""
         },
 
         /**
-        * Sets the language of turn instructions.
+        * Sets the language of turn instructions. If this is empty, it will set
+        * to html lang or, if this is also unknown, to browser language.
         */
         locale: {
           type: String,
@@ -254,14 +244,14 @@ Example:
         */
         newestNotification: {
           type: Object
-        },
-
-        _notificationStack: {
-          type: Array,
-          value: function() {
-            return [];
-          }
         }
+
+        // _notificationStack: {
+        //   type: Array,
+        //   value: function() {
+        //     return [];
+        //   }
+        // }
       },
 
       observers: [
@@ -312,28 +302,34 @@ Example:
             return o.turn === turnCode;
           });
           this.set("instruction", turn[0].text);
-          this.turnIcon = this.turnIconSource[turnCode];
+          this._turnIcon = this.turnIconSource[turnCode];
         }
       },
 
+      /**
+      * Adds notifications to the container. Parameter is an object in following
+      * form {
+      *  title: "This message is persistent",
+      *  icon: "",
+      *  type: "",
+      *  persist: true
+      }
+      */
       addNotification: function(newestNotification) {
         var notifications = this.$.notifications;
-        // var lastNotification = Polymer.dom(notifications).childNodes[0];
         var notification = document.createElement("gn-route-notification");
-        // notification.class = "swipe";
         notification.title = newestNotification.title;
         notification.icon = newestNotification.icon;
         if (newestNotification.type !== "") {
           notification.setAttribute(newestNotification.type, true);
         }
         notification.persist = newestNotification.persist;
-        // var lastNotification = document.querySelector("gn-route-notification");
-        // if (lastNotification !== null) {
-        //   lastNotification.hide();
-        // }
         Polymer.dom(notifications).appendChild(notification);
       },
 
+      /**
+      * Removes notifications from container.
+      */
       removeNotification: function() {
         var notifications = this.$.notifications;
         var lastNotification = Polymer.dom(notifications).childNodes[0];
